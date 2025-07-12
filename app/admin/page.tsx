@@ -1,10 +1,14 @@
 "use client"
 
+import type React from "react"
+
 import { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import {
   BarChart3,
   TrendingUp,
@@ -19,17 +23,71 @@ import {
   AlertCircle,
   Phone,
   MapPin,
+  Plus,
+  Edit,
+  Trash2,
+  Upload,
 } from "lucide-react"
-import { OrderManagement } from "@/components/admin/order-management"
-import { AnalyticsDashboard } from "@/components/admin/analytics-dashboard"
-import { MenuManagement } from "@/components/admin/menu-management"
-import { CustomerInsights } from "@/components/admin/customer-insights"
-import { AdminHeader } from "@/components/admin/admin-header"
 
 export default function AdminPage() {
   const [activeTab, setActiveTab] = useState("dashboard")
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [credentials, setCredentials] = useState({ username: "", password: "" })
 
-  // Mock data for quick stats
+  // Mock authentication
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (credentials.username === "admin" && credentials.password === "maria123") {
+      setIsAuthenticated(true)
+    } else {
+      alert("Invalid credentials. Use admin/maria123")
+    }
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <Card className="w-full max-w-md">
+          <CardHeader className="text-center">
+            <CardTitle className="font-dancing text-3xl text-rustic-brown">Admin Access</CardTitle>
+            <p className="text-gray-600">Enter your credentials to access the backend</p>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleLogin} className="space-y-4">
+              <div>
+                <Label htmlFor="username">Username</Label>
+                <Input
+                  id="username"
+                  type="text"
+                  value={credentials.username}
+                  onChange={(e) => setCredentials({ ...credentials, username: e.target.value })}
+                  placeholder="Enter username"
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="password">Password</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  value={credentials.password}
+                  onChange={(e) => setCredentials({ ...credentials, password: e.target.value })}
+                  placeholder="Enter password"
+                  required
+                />
+              </div>
+              <Button type="submit" className="w-full bg-sunset-orange hover:bg-orange-500">
+                Login to Admin Panel
+              </Button>
+              <p className="text-xs text-gray-500 text-center">Demo credentials: admin / maria123</p>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
+
+  // Mock data for dashboard
   const todayStats = {
     orders: 47,
     revenue: 12450,
@@ -73,6 +131,36 @@ export default function AdminPage() {
     },
   ]
 
+  const menuItems = [
+    {
+      id: 1,
+      name: "Chorizo Croissant",
+      category: "Croissants",
+      price: 199,
+      image: "/chorizo-croissant.png",
+      available: true,
+      ordersToday: 23,
+    },
+    {
+      id: 2,
+      name: "Chicken Cafreal",
+      category: "Goan Mains",
+      price: 280,
+      image: "/curry-rice.png",
+      available: true,
+      ordersToday: 18,
+    },
+    {
+      id: 3,
+      name: "Ross Omelette",
+      category: "Goan Mains",
+      price: 209,
+      image: "/ross-omelette.png",
+      available: false,
+      ordersToday: 0,
+    },
+  ]
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case "pending":
@@ -109,26 +197,43 @@ export default function AdminPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <AdminHeader />
+      {/* Header */}
+      <div className="bg-white shadow-sm border-b">
+        <div className="max-w-7xl mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="font-dancing text-3xl font-bold text-rustic-brown">Maria's Admin Panel</h1>
+              <p className="text-gray-600">Manage your restaurant operations</p>
+            </div>
+            <Button
+              onClick={() => setIsAuthenticated(false)}
+              variant="outline"
+              className="text-red-600 border-red-200 hover:bg-red-50"
+            >
+              Logout
+            </Button>
+          </div>
+        </div>
+      </div>
 
       <div className="max-w-7xl mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 lg:w-auto lg:grid-cols-4">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="dashboard" className="flex items-center gap-2">
               <BarChart3 className="h-4 w-4" />
-              <span className="hidden sm:inline">Dashboard</span>
+              Dashboard
             </TabsTrigger>
             <TabsTrigger value="orders" className="flex items-center gap-2">
               <ShoppingBag className="h-4 w-4" />
-              <span className="hidden sm:inline">Orders</span>
+              Orders
             </TabsTrigger>
             <TabsTrigger value="menu" className="flex items-center gap-2">
               <Settings className="h-4 w-4" />
-              <span className="hidden sm:inline">Menu</span>
+              Menu
             </TabsTrigger>
-            <TabsTrigger value="customers" className="flex items-center gap-2">
+            <TabsTrigger value="analytics" className="flex items-center gap-2">
               <Users className="h-4 w-4" />
-              <span className="hidden sm:inline">Customers</span>
+              Analytics
             </TabsTrigger>
           </TabsList>
 
@@ -208,66 +313,207 @@ export default function AdminPage() {
               </Card>
             </div>
 
-            {/* Recent Orders Overview */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between">
-                  <CardTitle className="font-handwritten text-2xl text-rustic-brown">Recent Orders</CardTitle>
-                  <Button variant="outline" size="sm">
-                    <Eye className="h-4 w-4 mr-2" />
-                    View All
-                  </Button>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {recentOrders.slice(0, 3).map((order) => (
-                    <div
-                      key={order.id}
-                      className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 transition-colors"
-                    >
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className="font-medium text-gray-900">#{order.id}</span>
-                          <Badge className={`${getStatusColor(order.status)} flex items-center gap-1`}>
-                            {getStatusIcon(order.status)}
-                            {order.status}
-                          </Badge>
+            {/* Recent Orders */}
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle className="font-dancing text-2xl text-rustic-brown">Recent Orders</CardTitle>
+                <Button variant="outline" size="sm">
+                  <Eye className="h-4 w-4 mr-2" />
+                  View All
+                </Button>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {recentOrders.map((order) => (
+                  <div
+                    key={order.id}
+                    className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 transition-colors"
+                  >
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="font-medium text-gray-900">#{order.id}</span>
+                        <Badge className={`${getStatusColor(order.status)} flex items-center gap-1`}>
+                          {getStatusIcon(order.status)}
+                          {order.status}
+                        </Badge>
+                      </div>
+                      <p className="text-sm text-gray-600">{order.customer}</p>
+                      <p className="text-sm text-gray-500">{order.items.join(", ")}</p>
+                      <div className="flex items-center gap-4 mt-2">
+                        <span className="text-sm font-medium text-sunset-orange">₹{order.total}</span>
+                        <span className="text-xs text-gray-500">{order.time}</span>
+                      </div>
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      <Button size="sm" variant="outline">
+                        <Phone className="h-4 w-4" />
+                      </Button>
+                      {order.type === "delivery" && (
+                        <Button size="sm" variant="outline">
+                          <MapPin className="h-4 w-4" />
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="orders" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="font-dancing text-2xl text-rustic-brown">Order Management</CardTitle>
+                <p className="text-gray-600">Manage incoming orders and track their status</p>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {recentOrders.map((order) => (
+                    <div key={order.id} className="border rounded-lg p-4">
+                      <div className="flex items-center justify-between mb-4">
+                        <div>
+                          <h3 className="font-semibold">Order #{order.id}</h3>
+                          <p className="text-sm text-gray-600">
+                            {order.customer} • {order.phone}
+                          </p>
                         </div>
-                        <p className="text-sm text-gray-600">{order.customer}</p>
-                        <p className="text-sm text-gray-500">{order.items.join(", ")}</p>
-                        <div className="flex items-center gap-4 mt-2">
-                          <span className="text-sm font-medium text-sunset-orange">₹{order.total}</span>
-                          <span className="text-xs text-gray-500">{order.time}</span>
+                        <Badge className={getStatusColor(order.status)}>{order.status}</Badge>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                          <p className="text-sm font-medium">Items:</p>
+                          <p className="text-sm text-gray-600">{order.items.join(", ")}</p>
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium">Total:</p>
+                          <p className="text-sm text-gray-600">₹{order.total}</p>
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium">Type:</p>
+                          <p className="text-sm text-gray-600">{order.type}</p>
                         </div>
                       </div>
-                      <div className="flex flex-col gap-2">
+                      <div className="flex gap-2 mt-4">
                         <Button size="sm" variant="outline">
-                          <Phone className="h-4 w-4" />
+                          Accept
                         </Button>
-                        {order.type === "delivery" && (
-                          <Button size="sm" variant="outline">
-                            <MapPin className="h-4 w-4" />
-                          </Button>
-                        )}
+                        <Button size="sm" variant="outline">
+                          Preparing
+                        </Button>
+                        <Button size="sm" variant="outline">
+                          Ready
+                        </Button>
+                        <Button size="sm" variant="outline">
+                          Delivered
+                        </Button>
                       </div>
                     </div>
                   ))}
-                </CardContent>
-              </Card>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
 
-              <AnalyticsDashboard />
+          <TabsContent value="menu" className="space-y-6">
+            <div className="flex justify-between items-center">
+              <div>
+                <h2 className="font-dancing text-2xl text-rustic-brown">Menu Management</h2>
+                <p className="text-gray-600">Add, edit, and manage your menu items</p>
+              </div>
+              <Button className="bg-sunset-orange hover:bg-orange-500">
+                <Plus className="h-4 w-4 mr-2" />
+                Add New Item
+              </Button>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {menuItems.map((item) => (
+                <Card key={item.id} className={`overflow-hidden ${!item.available ? "opacity-60" : ""}`}>
+                  <CardContent className="p-0">
+                    <div className="relative h-48">
+                      <img
+                        src={item.image || "/placeholder.svg"}
+                        alt={item.name}
+                        className="w-full h-full object-cover"
+                      />
+                      {!item.available && (
+                        <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                          <span className="text-white font-semibold">Out of Stock</span>
+                        </div>
+                      )}
+                    </div>
+                    <div className="p-4">
+                      <div className="flex justify-between items-start mb-2">
+                        <div>
+                          <h3 className="font-semibold">{item.name}</h3>
+                          <p className="text-sm text-gray-600">{item.category}</p>
+                        </div>
+                        <span className="font-bold text-sunset-orange">₹{item.price}</span>
+                      </div>
+                      <p className="text-sm text-gray-600 mb-3">Orders today: {item.ordersToday}</p>
+                      <div className="flex gap-2">
+                        <Button size="sm" variant="outline">
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button size="sm" variant="outline">
+                          <Upload className="h-4 w-4" />
+                        </Button>
+                        <Button size="sm" variant="outline" className="text-red-600 bg-transparent">
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
           </TabsContent>
 
-          <TabsContent value="orders">
-            <OrderManagement />
-          </TabsContent>
+          <TabsContent value="analytics" className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Sales Analytics</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex justify-between">
+                      <span>This Week</span>
+                      <span className="font-semibold">₹45,230</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>This Month</span>
+                      <span className="font-semibold">₹1,89,450</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Total Orders</span>
+                      <span className="font-semibold">1,247</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
 
-          <TabsContent value="menu">
-            <MenuManagement />
-          </TabsContent>
-
-          <TabsContent value="customers">
-            <CustomerInsights />
+              <Card>
+                <CardHeader>
+                  <CardTitle>Popular Items</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    <div className="flex justify-between">
+                      <span>Chorizo Croissant</span>
+                      <span className="text-green-600">156 orders</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Chicken Cafreal</span>
+                      <span className="text-green-600">134 orders</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Ross Omelette</span>
+                      <span className="text-green-600">98 orders</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           </TabsContent>
         </Tabs>
       </div>

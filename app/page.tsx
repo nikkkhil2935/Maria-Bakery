@@ -6,12 +6,12 @@ import { LocationSection } from "@/components/home/location-section"
 
 export default function HomePage() {
   return (
-    <>
+    <div className="min-h-screen">
       <HeroSection />
       <AboutSection />
       <MenuPreviewSection />
       <GallerySection />
       <LocationSection />
-    </>
+    </div>
   )
 }

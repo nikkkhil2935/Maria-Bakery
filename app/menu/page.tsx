@@ -1,103 +1,231 @@
 "use client"
+
 import Image from "next/image"
-import Link from "next/link"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { Leaf, Flame, Star, Plus } from "lucide-react"
+import { useCart } from "@/contexts/cart-context"
 
-const menuSections = [
+const menuCategories = [
   {
     title: "Croissants",
-    description: "Buttery, flaky croissants baked fresh daily",
+    description: "Freshly baked daily with love",
     items: [
       {
+        id: "croissant-plain",
         name: "Plain Croissant",
-        price: "₹89",
-        image: "/chorizo-croissant.png",
-        description: "Classic French croissant with golden, crispy exterior",
+        price: 80,
+        image: "/placeholder.svg?height=200&width=200",
+        description: "Buttery, flaky, and perfectly golden",
+        veg: true,
+        popular: false,
       },
       {
+        id: "croissant-butter",
         name: "Butter Croissant",
-        price: "₹119",
-        image: "/croissant-sandwich.png",
-        description: "Extra buttery croissant perfect for breakfast",
+        price: 90,
+        image: "/placeholder.svg?height=200&width=200",
+        description: "Extra buttery with a rich, indulgent taste",
+        veg: true,
+        popular: true,
       },
       {
+        id: "croissant-cheese",
         name: "Cheese Croissant",
-        price: "₹139",
-        image: "/croissant-sandwich.png",
-        description: "Flaky croissant filled with melted cheese",
+        price: 120,
+        image: "/placeholder.svg?height=200&width=200",
+        description: "Filled with melted cheese goodness",
+        veg: true,
+        popular: false,
       },
       {
+        id: "croissant-chorizo",
         name: "Chorizo Chicken Croissant",
-        price: "₹199",
-        image: "/chorizo-croissant.png",
-        description: "Our signature croissant with spicy Goan chorizo",
+        price: 199,
+        image: "/placeholder.svg?height=200&width=200",
+        description: "Spicy chorizo chicken with herbs",
+        veg: false,
+        popular: true,
+        spicy: true,
+      },
+      {
+        id: "croissant-cafreal",
+        name: "Chicken Cafreal Croissant",
+        price: 189,
+        image: "/placeholder.svg?height=200&width=200",
+        description: "Authentic Goan cafreal chicken filling",
+        veg: false,
+        popular: false,
+        spicy: true,
       },
     ],
   },
   {
     title: "Goan Mains",
-    description: "Authentic Goan flavors passed down through generations",
+    description: "Authentic flavors from the coast of Goa",
     items: [
       {
+        id: "chicken-cafreal",
         name: "Chicken Cafreal",
-        price: "₹279",
-        image: "/curry-rice.png",
-        description: "Traditional green masala chicken with aromatic herbs",
+        price: 280,
+        image: "/placeholder.svg?height=200&width=200",
+        description: "Traditional Goan green masala chicken",
+        veg: false,
+        popular: true,
+        spicy: true,
       },
       {
+        id: "ross-omelette",
         name: "Ross Omelette",
-        price: "₹209",
-        image: "/ross-omelette.png",
-        description: "Goan curry omelette served with fresh bread",
+        price: 180,
+        image: "/placeholder.svg?height=200&width=200",
+        description: "Goan-style curry omelette with coconut",
+        veg: false,
+        popular: true,
+        spicy: true,
       },
       {
+        id: "mushroom-xacuti",
         name: "Mushroom Xacuti",
-        price: "₹279",
-        image: "/mushroom-xacuti.png",
-        description: "Rich vegetarian curry with traditional Goan spices",
+        price: 220,
+        image: "/placeholder.svg?height=200&width=200",
+        description: "Aromatic mushroom curry with roasted spices",
+        veg: true,
+        popular: false,
+        spicy: true,
       },
       {
+        id: "goan-curry-bread",
         name: "Goan Curry with Bread",
-        price: "₹249",
-        image: "/goan-curry-bread.png",
-        description: "Authentic curry served with traditional Goan bread",
+        price: 249,
+        image: "/placeholder.svg?height=200&width=200",
+        description: "Traditional curry served with fresh bread",
+        veg: false,
+        popular: false,
+        spicy: true,
+      },
+      {
+        id: "pork-vindaloo",
+        name: "Pork Vindaloo",
+        price: 320,
+        image: "/placeholder.svg?height=200&width=200",
+        description: "Fiery Goan pork curry with vinegar and spices",
+        veg: false,
+        popular: false,
+        spicy: true,
+      },
+      {
+        id: "fish-curry",
+        name: "Goan Fish Curry",
+        price: 299,
+        image: "/placeholder.svg?height=200&width=200",
+        description: "Coconut-based fish curry with kokum",
+        veg: false,
+        popular: true,
+        spicy: true,
       },
     ],
   },
   {
     title: "Italian Dishes",
-    description: "Comforting Italian classics with our special touch",
+    description: "Classic Italian comfort food",
     items: [
       {
+        id: "goan-shakshuka",
         name: "Goan Shakshuka with Cheese",
-        price: "₹289",
-        image: "/breakfast-plate.png",
-        description: "Goan twist on classic Middle Eastern dish",
+        price: 250,
+        image: "/placeholder.svg?height=200&width=200",
+        description: "Goan twist on the classic shakshuka",
+        veg: true,
+        popular: true,
+        spicy: false,
       },
       {
+        id: "italian-breakfast",
         name: "Italian Breakfast Platter",
-        price: "₹259",
-        image: "/full-breakfast.png",
-        description: "Complete Italian-style breakfast experience",
+        price: 320,
+        image: "/placeholder.svg?height=200&width=200",
+        description: "Complete breakfast with eggs, sausage, and toast",
+        veg: false,
+        popular: true,
+        spicy: false,
+      },
+      {
+        id: "pasta-arrabbiata",
+        name: "Pasta Arrabbiata",
+        price: 280,
+        image: "/placeholder.svg?height=200&width=200",
+        description: "Spicy tomato pasta with garlic and herbs",
+        veg: true,
+        popular: false,
+        spicy: true,
+      },
+      {
+        id: "margherita-pizza",
+        name: "Margherita Pizza",
+        price: 350,
+        image: "/placeholder.svg?height=200&width=200",
+        description: "Classic pizza with fresh mozzarella and basil",
+        veg: true,
+        popular: true,
+        spicy: false,
+      },
+      {
+        id: "chicken-alfredo",
+        name: "Chicken Alfredo Pasta",
+        price: 380,
+        image: "/placeholder.svg?height=200&width=200",
+        description: "Creamy pasta with grilled chicken",
+        veg: false,
+        popular: false,
+        spicy: false,
       },
     ],
   },
   {
     title: "Specials",
-    description: "Chef's special creations and signature dishes",
+    description: "Chef's signature creations",
     items: [
       {
+        id: "english-breakfast",
         name: "All Day English Breakfast",
-        price: "₹289",
-        image: "/full-breakfast.png",
-        description: "Complete breakfast platter with eggs, sausages, and more",
+        price: 350,
+        image: "/placeholder.svg?height=200&width=200",
+        description: "Full English breakfast served all day",
+        veg: false,
+        popular: true,
+        spicy: false,
       },
       {
+        id: "marias-special",
         name: "Maria's Special Platter",
-        price: "₹349",
-        image: "/breakfast-plate.png",
-        description: "Chef's special combination of our best dishes",
+        price: 420,
+        image: "/placeholder.svg?height=200&width=200",
+        description: "Chef's special combination platter",
+        veg: false,
+        popular: true,
+        spicy: true,
+      },
+      {
+        id: "goan-thali",
+        name: "Goan Thali",
+        price: 380,
+        image: "/placeholder.svg?height=200&width=200",
+        description: "Complete Goan meal with rice, curry, and sides",
+        veg: false,
+        popular: true,
+        spicy: true,
+      },
+      {
+        id: "weekend-brunch",
+        name: "Weekend Brunch Special",
+        price: 299,
+        image: "/placeholder.svg?height=200&width=200",
+        description: "Special weekend brunch combination",
+        veg: false,
+        popular: false,
+        spicy: false,
       },
     ],
   },
@@ -106,60 +234,131 @@ const menuSections = [
     description: "Sweet endings and refreshing beverages",
     items: [
       {
+        id: "red-wine-cake",
         name: "Red Wine Cake",
-        price: "₹229",
-        image: "/placeholder.svg?height=200&width=300",
-        description: "Decadent chocolate cake infused with red wine",
+        price: 150,
+        image: "/placeholder.svg?height=200&width=200",
+        description: "Rich chocolate cake with red wine",
+        veg: true,
+        popular: true,
+        spicy: false,
       },
       {
+        id: "cold-coffee",
         name: "Cold Coffee",
-        price: "₹159",
-        image: "/placeholder.svg?height=200&width=300",
-        description: "Refreshing iced coffee blend perfect for hot days",
+        price: 120,
+        image: "/placeholder.svg?height=200&width=200",
+        description: "Refreshing iced coffee with cream",
+        veg: true,
+        popular: true,
+        spicy: false,
       },
       {
+        id: "fresh-lime-soda",
         name: "Fresh Lime Soda",
-        price: "₹89",
-        image: "/placeholder.svg?height=200&width=300",
-        description: "Zesty lime soda to refresh your palate",
+        price: 80,
+        image: "/placeholder.svg?height=200&width=200",
+        description: "Freshly squeezed lime with soda",
+        veg: true,
+        popular: false,
+        spicy: false,
+      },
+      {
+        id: "bebinca",
+        name: "Bebinca",
+        price: 180,
+        image: "/placeholder.svg?height=200&width=200",
+        description: "Traditional Goan layered dessert",
+        veg: true,
+        popular: false,
+        spicy: false,
+      },
+      {
+        id: "cappuccino",
+        name: "Cappuccino",
+        price: 100,
+        image: "/placeholder.svg?height=200&width=200",
+        description: "Perfect espresso with steamed milk",
+        veg: true,
+        popular: true,
+        spicy: false,
+      },
+      {
+        id: "fresh-juice",
+        name: "Fresh Fruit Juice",
+        price: 90,
+        image: "/placeholder.svg?height=200&width=200",
+        description: "Seasonal fresh fruit juice",
+        veg: true,
+        popular: false,
+        spicy: false,
+      },
+      {
+        id: "masala-chai",
+        name: "Masala Chai",
+        price: 60,
+        image: "/placeholder.svg?height=200&width=200",
+        description: "Traditional spiced tea",
+        veg: true,
+        popular: true,
+        spicy: false,
+      },
+      {
+        id: "chocolate-mousse",
+        name: "Chocolate Mousse",
+        price: 160,
+        image: "/placeholder.svg?height=200&width=200",
+        description: "Rich and creamy chocolate dessert",
+        veg: true,
+        popular: false,
+        spicy: false,
       },
     ],
   },
 ]
 
 export default function MenuPage() {
+  const { dispatch } = useCart()
+
+  const addToCart = (item: any) => {
+    dispatch({
+      type: "ADD_ITEM",
+      payload: {
+        id: item.id,
+        name: item.name,
+        price: item.price,
+        image: item.image,
+        category: menuCategories.find((cat) => cat.items.some((i) => i.id === item.id))?.title,
+      },
+    })
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-cream via-mustard-yellow/10 to-sunset-orange/10">
+    <div className="min-h-screen bg-white">
       {/* Header Section */}
-      <section className="relative py-20 bg-gradient-to-r from-rustic-brown to-rustic-brown/80">
-        <div className="absolute inset-0">
-          <Image src="/full-breakfast.png" alt="Delicious food spread" fill className="object-cover opacity-30" />
-        </div>
-        <div className="relative z-10 max-w-7xl mx-auto px-4 text-center">
-          <h1 className="font-handwritten text-5xl md:text-6xl text-cream mb-4 glow-effect">Our Menu</h1>
-          <p className="font-casual text-2xl md:text-3xl text-mustard-yellow font-bold mb-4">Delight in Every Bite</p>
-          <p className="text-lg text-cream/80 max-w-2xl mx-auto">
-            Explore our curated selection of Goan and Italian comfort foods, crafted with love and served with
-            tradition.
+      <section className="py-16 bg-gradient-to-b from-cream to-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h1 className="font-dancing text-4xl md:text-6xl font-bold text-rustic-brown mb-4">Our Menu</h1>
+          <p className="font-dancing text-xl md:text-2xl text-sunset-orange mb-6">Delight in Every Bite</p>
+          <p className="text-lg text-rustic-brown/70 max-w-2xl mx-auto">
+            Explore our curated selection of Goan and Italian comfort foods, crafted with authentic ingredients and
+            traditional recipes.
           </p>
         </div>
       </section>
 
-      <div className="max-w-7xl mx-auto px-4 py-12">
-        {/* Menu Sections */}
-        {menuSections.map((section, sectionIndex) => (
-          <section key={section.title} className="mb-16">
-            <div className="text-center mb-8">
-              <h2 className="font-handwritten text-4xl text-rustic-brown mb-2">{section.title}</h2>
-              <p className="text-lg text-rustic-brown/70">{section.description}</p>
+      {/* Menu Sections */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+        {menuCategories.map((category, categoryIndex) => (
+          <section key={category.title} className="mb-16">
+            <div className="text-center mb-12">
+              <h2 className="font-dancing text-3xl md:text-4xl font-bold text-rustic-brown mb-2">{category.title}</h2>
+              <p className="text-lg text-rustic-brown/70">{category.description}</p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {section.items.map((item, index) => (
-                <Card
-                  key={index}
-                  className="group hover:shadow-xl transition-all duration-300 bg-white border-2 border-mustard-yellow/20 hover:border-mustard-yellow/50 overflow-hidden"
-                >
+              {category.items.map((item, itemIndex) => (
+                <Card key={item.id} className="overflow-hidden hover:shadow-xl transition-all duration-300 group">
                   <CardContent className="p-0">
                     <div className="relative h-48 overflow-hidden">
                       <Image
@@ -168,11 +367,45 @@ export default function MenuPage() {
                         fill
                         className="object-cover group-hover:scale-105 transition-transform duration-300"
                       />
+                      <div className="absolute top-3 left-3 flex gap-2">
+                        {item.veg && (
+                          <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
+                            <Leaf className="w-3 h-3 mr-1" />
+                            Veg
+                          </Badge>
+                        )}
+                        {item.spicy && (
+                          <Badge className="bg-red-100 text-red-800 hover:bg-red-100">
+                            <Flame className="w-3 h-3 mr-1" />
+                            Spicy
+                          </Badge>
+                        )}
+                        {item.popular && (
+                          <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">
+                            <Star className="w-3 h-3 mr-1" />
+                            Popular
+                          </Badge>
+                        )}
+                      </div>
                     </div>
+
                     <div className="p-6">
-                      <h3 className="font-casual text-xl font-bold text-rustic-brown mb-2">{item.name}</h3>
-                      <p className="text-rustic-brown/70 text-sm mb-3">{item.description}</p>
-                      <p className="text-2xl font-bold text-sunset-orange">{item.price}</p>
+                      <div className="flex justify-between items-start mb-2">
+                        <h3 className="font-semibold text-lg text-rustic-brown group-hover:text-sunset-orange transition-colors">
+                          {item.name}
+                        </h3>
+                        <span className="font-bold text-xl text-sunset-orange">₹{item.price}</span>
+                      </div>
+
+                      <p className="text-rustic-brown/70 text-sm mb-4 line-clamp-2">{item.description}</p>
+
+                      <Button
+                        onClick={() => addToCart(item)}
+                        className="w-full bg-sunset-orange hover:bg-sunset-orange/90 text-white font-medium"
+                      >
+                        <Plus className="w-4 h-4 mr-2" />
+                        Add to Cart
+                      </Button>
                     </div>
                   </CardContent>
                 </Card>
@@ -180,20 +413,22 @@ export default function MenuPage() {
             </div>
           </section>
         ))}
-
-        {/* CTA Section */}
-        <section className="text-center bg-gradient-to-r from-sunset-orange/20 to-mustard-yellow/20 rounded-2xl p-8 mb-12">
-          <h2 className="font-handwritten text-3xl text-rustic-brown mb-4 glow-effect">Hungry? Visit Us Today!</h2>
-          <p className="text-rustic-brown/70 mb-6 text-lg">
-            Come experience the authentic flavors and warm hospitality that make Maria's special.
-          </p>
-          <Link href="/find-us">
-            <Button className="bg-gradient-to-r from-sunset-orange to-orange-500 hover:from-orange-500 hover:to-sunset-orange text-white text-lg px-8 py-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 font-bold glow-effect">
-              Find Us
-            </Button>
-          </Link>
-        </section>
       </div>
+
+      {/* CTA Section */}
+      <section className="py-16 bg-gradient-to-r from-sunset-orange to-orange-500 text-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="font-dancing text-3xl md:text-4xl font-bold mb-4">Hungry? Visit Us Today!</h2>
+          <p className="text-xl mb-8">Experience the authentic flavors in our cozy café atmosphere</p>
+          <Button
+            asChild
+            size="lg"
+            className="bg-white text-sunset-orange hover:bg-cream font-semibold px-8 py-4 text-lg"
+          >
+            <a href="/find-us">Find Us</a>
+          </Button>
+        </div>
+      </section>
     </div>
   )
 }

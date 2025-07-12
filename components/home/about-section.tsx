@@ -1,29 +1,80 @@
+import Image from "next/image"
+import { Card, CardContent } from "@/components/ui/card"
+
 export function AboutSection() {
   return (
-    <section className="py-16 bg-cream">
-      <div className="max-w-7xl mx-auto px-4 text-center">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="font-handwritten text-4xl md:text-5xl text-rustic-brown mb-8">Our Story</h2>
+    <section className="py-16 bg-gradient-to-b from-cream to-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          {/* Text Content */}
+          <div className="space-y-6">
+            <h2 className="font-dancing text-3xl md:text-5xl font-bold text-rustic-brown">Our Story</h2>
 
-          <p className="text-xl text-rustic-brown/80 leading-relaxed mb-8">
-            A quaint homemade café serving Goan and Italian comfort food with heart. Loved by groups, solo diners, and
-            foodies alike.
-          </p>
+            <div className="prose prose-lg text-rustic-brown/80">
+              <p className="text-lg leading-relaxed">
+                A quaint homemade café serving <strong>Goan and Italian comfort food with heart</strong>. Loved by
+                groups, solo diners, and foodies alike, Maria's is more than just a place to eat – it's where memories
+                are made.
+              </p>
 
-          {/* Mood Words */}
-          <div className="flex flex-wrap justify-center gap-4 mb-8">
-            <span className="bg-gradient-to-r from-sunset-orange/20 to-mustard-yellow/20 text-rustic-brown px-6 py-3 rounded-full font-medium text-lg">
-              🏠 Cozy
-            </span>
-            <span className="bg-gradient-to-r from-sky-blue/20 to-mustard-yellow/20 text-rustic-brown px-6 py-3 rounded-full font-medium text-lg">
-              😊 Casual
-            </span>
-            <span className="bg-gradient-to-r from-mustard-yellow/20 to-sunset-orange/20 text-rustic-brown px-6 py-3 rounded-full font-medium text-lg">
-              🤝 Friendly
-            </span>
-            <span className="bg-gradient-to-r from-sunset-orange/20 to-sky-blue/20 text-rustic-brown px-6 py-3 rounded-full font-medium text-lg">
-              💭 Memory-Filled
-            </span>
+              <p className="text-lg leading-relaxed">
+                Our <em>cozy</em>, <em>casual</em>, and <em>friendly</em> atmosphere welcomes you into a
+                <em>memory-filled</em> space where authentic flavors meet warm hospitality. From the aroma of freshly
+                baked croissants to rich, spicy Goan curries, every dish is crafted with tradition and love.
+              </p>
+            </div>
+
+            {/* Features */}
+            <div className="grid grid-cols-2 gap-4 mt-8">
+              <Card className="border-sunset-orange/20">
+                <CardContent className="p-4 text-center">
+                  <div className="text-2xl mb-2">🏠</div>
+                  <h3 className="font-semibold text-rustic-brown">Cozy</h3>
+                  <p className="text-sm text-rustic-brown/70">Warm & welcoming</p>
+                </CardContent>
+              </Card>
+
+              <Card className="border-sunset-orange/20">
+                <CardContent className="p-4 text-center">
+                  <div className="text-2xl mb-2">👥</div>
+                  <h3 className="font-semibold text-rustic-brown">Friendly</h3>
+                  <p className="text-sm text-rustic-brown/70">Like family</p>
+                </CardContent>
+              </Card>
+
+              <Card className="border-sunset-orange/20">
+                <CardContent className="p-4 text-center">
+                  <div className="text-2xl mb-2">🍽️</div>
+                  <h3 className="font-semibold text-rustic-brown">Casual</h3>
+                  <p className="text-sm text-rustic-brown/70">Relaxed dining</p>
+                </CardContent>
+              </Card>
+
+              <Card className="border-sunset-orange/20">
+                <CardContent className="p-4 text-center">
+                  <div className="text-2xl mb-2">💝</div>
+                  <h3 className="font-semibold text-rustic-brown">Memory-filled</h3>
+                  <p className="text-sm text-rustic-brown/70">Unforgettable moments</p>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+
+          {/* Image */}
+          <div className="relative">
+            <div className="relative h-96 lg:h-[500px] rounded-2xl overflow-hidden shadow-2xl">
+              <Image src="/full-breakfast.png" alt="Maria's delicious breakfast spread" fill className="object-cover" />
+            </div>
+
+            {/* Floating Card */}
+            <Card className="absolute -bottom-6 -left-6 bg-white shadow-xl border-2 border-sunset-orange/30">
+              <CardContent className="p-6">
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-sunset-orange">500+</div>
+                  <div className="text-sm text-rustic-brown">Happy Customers</div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>
